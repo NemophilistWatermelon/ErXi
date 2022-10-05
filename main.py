@@ -241,11 +241,11 @@ def send_message(to_user, access_token, city_name, weather, max_temperature, min
                 "value": weather,
                 "color": get_color()
             },
-            "min_temperature": {
+            "min_t": {
                 "value": min_temperature,
                 "color": get_color()
             },
-            "max_temperature": {
+            "max_t": {
                 "value": max_temperature,
                 "color": get_color()
             },
