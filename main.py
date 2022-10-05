@@ -1,3 +1,4 @@
+#encoding:utf-8
 import random
 from time import time, localtime
 import cityinfo
@@ -6,13 +7,37 @@ from datetime import datetime, date
 from zhdate import ZhDate
 import sys
 import os
-
+import json
 
 def get_color():
     # 获取随机颜色
     get_colors = lambda n: list(map(lambda i: "#" + "%06x" % random.randint(0, 0xFFFFFF), range(n)))
     color_list = get_colors(100)
     return random.choice(color_list)
+
+def pin_time_zero(num):
+    if (num < 10):
+        return '0' + str(num)
+    else:
+        return num
+
+def get_xz_data():
+    date = '{}-{}-{}'.format(localtime().tm_year, pin_time_zero(localtime().tm_mon), pin_time_zero(localtime().tm_mday))
+    post_url = ('https://api.jisuapi.com/astro/fortune?astroid=10&date={}&appkey=e4d2fb2352aa863d').format(date)
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
+                      'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36'
+    }
+    try:
+        r = get(post_url, headers=headers)
+        r.encoding = "utf-8"
+        json_data = r.json()
+        j = json.dumps(json_data, sort_keys=True, indent=2, separators=(',', ': '), ensure_ascii=False)
+    except KeyError:
+        print("获取星座信息失败，请检查")
+        os.system("pause")
+        sys.exit(1)
+    return j
 
 
 def get_access_token():
@@ -111,7 +136,7 @@ def get_ciba():
     return note_ch, note_en
 
 
-def send_message(to_user, access_token, city_name, weather, max_temperature, min_temperature, note_ch, note_en):
+def send_message(to_user, access_token, city_name, weather, max_temperature, min_temperature, note_ch, note_en, xz_data):
     url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token={}".format(access_token)
     week_list = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"]
     year = localtime().tm_year
@@ -137,6 +162,73 @@ def send_message(to_user, access_token, city_name, weather, max_temperature, min
         "url": "http://weixin.qq.com/download",
         "topcolor": "#FF0000",
         "data": {
+            "xz": {
+                "value": "{}".format(xz_data.result.astroname)
+            },
+            "xzTodayCareer": {
+                "value": "{}".format(xz_data.result.today.date),
+                "color": get_color()
+            },
+            "xzTodayMoney": {
+                "value": "{}".format(xz_data.result.today.money),
+                "color": get_color()
+            },
+            "xzTodayTime": {
+                "value": "{}".format(xz_data.result.today.date),
+                "color": get_color()
+            },
+            "xzTodayLove": {
+                "value": "{}".format(xz_data.result.today.love),
+                "color": get_color()
+            },
+            "xzTodayHealth": {
+                "value": "{}".format(xz_data.result.today.health),
+                "color": get_color()
+            },
+            "xzTodayColor": {
+                "value": "{}".format(xz_data.result.today.color),
+                "color": get_color()
+            },
+            "xzTodayLuckyNum": {
+                "value": "{}".format(xz_data.result.today.number),
+                "color": get_color()
+            },
+            "xzTodayLuckyDesc": {
+                "value": "{}".format(xz_data.result.today.presummary),
+                "color": get_color()
+            },
+            "xzTodayLuckyStar": {
+                "value": "{}".format(xz_data.result.today.star),
+                "color": get_color()
+            },
+            "xzTodayLuckyStarSummary": {
+                "value": "{}".format(xz_data.result.today.summary),
+                "color": get_color()
+            },
+            "xzMonthTime": {
+                "value": "{}".format(xz_data.result.month.date),
+                "color": get_color()
+            },
+            "xzMonthCareer": {
+                "value": "{}".format(xz_data.result.month.career),
+                "color": get_color()
+            },
+            "xzMonthHealth": {
+                "value": "{}".format(xz_data.result.month.health),
+                "color": get_color()
+            },
+            "xzMonthLove": {
+                "value": "{}".format(xz_data.result.month.love),
+                "color": get_color()
+            },
+            "xzMonthMoney": {
+                "value": "{}".format(xz_data.result.month.money),
+                "color": get_color()
+            },
+            "xzMonthDesc": {
+                "value": "{}".format(xz_data.result.month.summary),
+                "color": get_color()
+            },
             "date": {
                 "value": "{} {}".format(today, week),
                 "color": get_color()
@@ -220,7 +312,9 @@ if __name__ == "__main__":
     weather, max_temperature, min_temperature = get_weather(province, city)
     # 获取词霸每日金句
     note_ch, note_en = get_ciba()
+    # 获取星座
+    xz_data = get_xz_data()
     # 公众号推送消息
     for user in users:
-        send_message(user, accessToken, city, weather, max_temperature, min_temperature, note_ch, note_en)
+        send_message(user, accessToken, city, weather, max_temperature, min_temperature, note_ch, note_en, xz_data)
     os.system("pause")
