@@ -1,12 +1,12 @@
 #encoding:utf-8
 import random
 from time import time, localtime
-import cityinfo
+# import cityinfo
 from requests import get, post
-from datetime import datetime, date
-from zhdate import ZhDate
-import sys
-import os
+# from datetime import datetime, date
+# from zhdate import ZhDate
+# import sys
+# import os
 import json
 
 def get_color():
@@ -37,7 +37,7 @@ def get_xz_data():
         print("获取星座信息失败，请检查")
         os.system("pause")
         sys.exit(1)
-    return j
+    return eval(j)
 
 
 def get_access_token():
@@ -291,30 +291,32 @@ def send_message(to_user, access_token, city_name, weather, max_temperature, min
 
 
 if __name__ == "__main__":
-    try:
-        with open("config.txt", encoding="utf-8") as f:
-            config = eval(f.read())
-    except FileNotFoundError:
-        print("推送消息失败，请检查config.txt文件是否与程序位于同一路径")
-        os.system("pause")
-        sys.exit(1)
-    except SyntaxError:
-        print("推送消息失败，请检查配置文件格式是否正确")
-        os.system("pause")
-        sys.exit(1)
-
-    # 获取accessToken
-    accessToken = get_access_token()
-    # 接收的用户
-    users = config["user"]
-    # 传入省份和市获取天气信息
-    province, city = config["province"], config["city"]
-    weather, max_temperature, min_temperature = get_weather(province, city)
-    # 获取词霸每日金句
-    note_ch, note_en = get_ciba()
-    # 获取星座
     xz_data = get_xz_data()
-    # 公众号推送消息
-    for user in users:
-        send_message(user, accessToken, city, weather, max_temperature, min_temperature, note_ch, note_en, xz_data)
-    os.system("pause")
+    print(xz_data['result'])
+    # try:
+    #     with open("config.txt", encoding="utf-8") as f:
+    #         config = eval(f.read())
+    # except FileNotFoundError:
+    #     print("推送消息失败，请检查config.txt文件是否与程序位于同一路径")
+    #     os.system("pause")
+    #     sys.exit(1)
+    # except SyntaxError:
+    #     print("推送消息失败，请检查配置文件格式是否正确")
+    #     os.system("pause")
+    #     sys.exit(1)
+
+    # # 获取accessToken
+    # accessToken = get_access_token()
+    # # 接收的用户
+    # users = config["user"]
+    # # 传入省份和市获取天气信息
+    # province, city = config["province"], config["city"]
+    # weather, max_temperature, min_temperature = get_weather(province, city)
+    # # 获取词霸每日金句
+    # note_ch, note_en = get_ciba()
+    # # 获取星座
+    # xz_data = get_xz_data()
+    # # 公众号推送消息
+    # for user in users:
+    #     send_message(user, accessToken, city, weather, max_temperature, min_temperature, note_ch, note_en, xz_data)
+    # os.system("pause")
