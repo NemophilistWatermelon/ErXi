@@ -23,6 +23,7 @@ def pin_time_zero(num):
 
 def get_xz_data():
     date = '{}-{}-{}'.format(localtime().tm_year, pin_time_zero(localtime().tm_mon), pin_time_zero(localtime().tm_mday))
+    print(date)
     post_url = ('https://api.jisuapi.com/astro/fortune?astroid=10&date={}&appkey=e4d2fb2352aa863d').format(date)
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
