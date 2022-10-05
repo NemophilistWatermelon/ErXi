@@ -163,70 +163,70 @@ def send_message(to_user, access_token, city_name, weather, max_temperature, min
         "topcolor": "#FF0000",
         "data": {
             "xz": {
-                "value": "{}".format(xz_data.result.astroname)
+                "value": xz_data.result.astroname
             },
             "xtc": {
-                "value": "{}".format(xz_data.result.today.date),
+                "value": xz_data.result.today.date,
                 "color": get_color()
             },
             "xtm": {
-                "value": "{}".format(xz_data.result.today.money),
+                "value": xz_data.result.today.money,
                 "color": get_color()
             },
             "xtt": {
-                "value": "{}".format(xz_data.result.today.date),
+                "value": xz_data.result.today.date,
                 "color": get_color()
             },
             "xtl": {
-                "value": "{}".format(xz_data.result.today.love),
+                "value": xz_data.result.today.love,
                 "color": get_color()
             },
             "xth": {
-                "value": "{}".format(xz_data.result.today.health),
+                "value": xz_data.result.today.health,
                 "color": get_color()
             },
             "xtcc": {
-                "value": "{}".format(xz_data.result.today.color),
+                "value": xz_data.result.today.color,
                 "color": get_color()
             },
             "xtsn": {
-                "value": "{}".format(xz_data.result.today.number),
+                "value": xz_data.result.today.number,
                 "color": get_color()
             },
             "xtd": {
-                "value": "{}".format(xz_data.result.today.presummary),
+                "value": xz_data.result.today.presummary,
                 "color": get_color()
             },
             "xts": {
-                "value": "{}".format(xz_data.result.today.star),
+                "value": xz_data.result.today.star,
                 "color": get_color()
             },
             "xzTodayLuckyStarSummary": {
-                "value": "{}".format(xz_data.result.today.summary),
+                "value": xz_data.result.today.summary,
                 "color": get_color()
             },
             "xtmd": {
-                "value": "{}".format(xz_data.result.month.date),
+                "value": xz_data.result.month.date,
                 "color": get_color()
             },
             "xtmc": {
-                "value": "{}".format(xz_data.result.month.career),
+                "value": xz_data.result.month.career,
                 "color": get_color()
             },
             "xtmh": {
-                "value": "{}".format(xz_data.result.month.health),
+                "value": xz_data.result.month.health,
                 "color": get_color()
             },
             "xtml": {
-                "value": "{}".format(xz_data.result.month.love),
+                "value": xz_data.result.month.love,
                 "color": get_color()
             },
             "xtmm": {
-                "value": "{}".format(xz_data.result.month.money),
+                "value": xz_data.result.month.money,
                 "color": get_color()
             },
             "xtmdd": {
-                "value": "{}".format(xz_data.result.month.summary),
+                "value": xz_data.result.month.summary,
                 "color": get_color()
             },
             "date": {
