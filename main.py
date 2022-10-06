@@ -164,68 +164,71 @@ def send_message(to_user, access_token, city_name, weather, max_temperature, min
         "url": "http://weixin.qq.com/download",
         "topcolor": "#FF0000",
         "data": {
+            "xz": {
+                "value": xz_data['result']['astroname']
+            },
             "xtc": {
-                "value": 121,
+                "value": xz_data['result']['today']['career'],
                 "color": get_color()
             },
             "xtm": {
-                "value": 12,
+                "value": xz_data['result']['today']['money'],
                 "color": get_color()
             },
             "xtt": {
-                "value": 12,
+                "value": xz_data['result']['today']['date'],
                 "color": get_color()
             },
             "xtl": {
-                "value": 423,
+                "value": xz_data['result']['today']['love'],
                 "color": get_color()
             },
             "xth": {
-                "value": 234,
+                "value": xz_data['result']['today']['health'],
                 "color": get_color()
             },
             "xtcc": {
-                "value": 324,
+                "value": xz_data['result']['today']['color'],
                 "color": get_color()
             },
             "xtsn": {
-                "value": 234,
+                "value": xz_data['result']['today']['number'],
                 "color": get_color()
             },
             "xtd": {
-                "value": 234,
+                "value": xz_data['result']['today']['presummary'],
                 "color": get_color()
             },
             "xts": {
-                "value": 324,
+                "value": xz_data['result']['today']['star'],
                 "color": get_color()
             },
             "xzTodayLuckyStarSummary": {
-                "value": 123,
+                "value": xz_data['result']['today']['summary'],
                 "color": get_color()
             },
             "xtmd": {
-                "value": 34,
+                "value": xz_data['result']['month']['date'],
                 "color": get_color()
             },
             "xtmc": {
-                "value": 2342,
+                "value": xz_data['result']['month']['career'],
                 "color": get_color()
             },
             "xtmh": {
-                "value": 232,
+                "value": xz_data['result']['month']['health'],
                 "color": get_color()
             },
             "xtml": {
-                "value": 23,
+                "value": xz_data['result']['month']['love'],
                 "color": get_color()
             },
             "xtmm": {
-                "value": 23,
+                "value": xz_data['result']['month']['money'],
                 "color": get_color()
             },
             "xtmdd": {
-                "value": 234,
+                "value": xz_data['result']['month']['summary'],
                 "color": get_color()
             },
             "date": {
