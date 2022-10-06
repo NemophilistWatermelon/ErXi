@@ -21,5 +21,4 @@
 
 今天也要乖乖的多喝水~(*^▽^*)
 
-{{note_en.DATA}} 
 {{note_ch.DATA}}
