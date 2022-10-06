@@ -2,7 +2,7 @@ name: weixin
 on:
   workflow_dispatch:
   schedule: 
-    - cron: '* 7 * * *'
+    - cron: '0 0 11 * * * *'
 jobs:
 #将工作流程中运行的所有作业组合在一起
   build:
