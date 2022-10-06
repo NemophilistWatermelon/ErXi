@@ -164,9 +164,6 @@ def send_message(to_user, access_token, city_name, weather, max_temperature, min
         "url": "http://weixin.qq.com/download",
         "topcolor": "#FF0000",
         "data": {
-            "xz": {
-                "value": xz_data['result']['astroname']
-            },
             "xtc": {
                 "value": xz_data['result']['today']['career'],
                 "color": get_color()
