@@ -22,8 +22,10 @@ def pin_time_zero(num):
         return num
 
 def get_xz_data():
-    d = int(localtime().tm_mday)
-    date = '{}-{}-{}'.format(localtime().tm_year, pin_time_zero(localtime().tm_mon), pin_time_zero(d))
+    oneDay = 1000 * 60 * 60 * 24
+    t = (int(round(time() * 1000))) + oneDay
+    a = datetime.fromtimestamp(t / 1000)
+    date = '{}-{}-{}'.format(a.year, pin_time_zero(a.month), pin_time_zero(a.day))
     print(date)
     post_url = ('https://api.jisuapi.com/astro/fortune?astroid=10&date={}&appkey=e4d2fb2352aa863d').format(date)
     headers = {
@@ -31,6 +33,7 @@ def get_xz_data():
                       'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36'
     }
     try:
+        print(12)
         r = get(post_url, headers=headers)
         r.encoding = "utf-8"
         json_data = r.json()
@@ -69,7 +72,8 @@ def get_weather(province, city):
         sys.exit(1)
     # city_id = 101280101
     # 毫秒级时间戳
-    t = (int(round(time() * 1000)))
+    oneDay = 1000 * 60 * 60 * 24
+    t = (int(round(time() * 1000))) + oneDay
     headers = {
         "Referer": "http://www.weather.com.cn/weather1d/{}.shtml".format(city_id),
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
@@ -141,10 +145,13 @@ def get_ciba():
 def send_message(to_user, access_token, city_name, weather, max_temperature, min_temperature, note_ch, note_en, xz_data):
     url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token={}".format(access_token)
     week_list = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"]
-    year = localtime().tm_year
-    month = localtime().tm_mon
-    day = localtime().tm_mday
-    today = datetime.date(datetime(year=year, month=month, day=day))
+    oneDay = 1000 * 60 * 60 * 24
+    t = (int(round(time() * 1000))) + oneDay
+    a = datetime.fromtimestamp(t / 1000)
+    y = a.year
+    m = a.month
+    dd = a.day
+    today = datetime.date(datetime(year=y, month=m, day=dd))
     week = week_list[today.isoweekday() % 7]
     # 获取在一起的日子的日期格式
     love_year = int(config["love_date"].split("-")[0])
@@ -267,7 +274,7 @@ def send_message(to_user, access_token, city_name, weather, max_temperature, min
     }
     for key, value in birthdays.items():
         # 获取距离下次生日的时间
-        birth_day = get_birthday(value["birthday"], year, today)
+        birth_day = get_birthday(value["birthday"], y, today)
         if birth_day == 0:
             birthday_data = "今天{}生日哦，祝{}生日快乐！".format(value["name"], value["name"])
         else:
