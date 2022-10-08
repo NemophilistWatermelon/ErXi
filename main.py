@@ -1,6 +1,8 @@
 #encoding:utf-8
+from pkgutil import get_data
 import random
 from time import time, localtime
+from wsgiref import headers
 import cityinfo
 from requests import get, post
 from datetime import datetime, date
@@ -14,6 +16,24 @@ def get_color():
     get_colors = lambda n: list(map(lambda i: "#" + "%06x" % random.randint(0, 0xFFFFFF), range(n)))
     color_list = get_colors(100)
     return random.choice(color_list)
+
+def get_yq():
+    url = ('https://v2.alapi.cn/api/springTravel/risk?provice={}&city={}&county={}&token={}').format('河南省', '焦作市', '武陟县', 'USEOUa5B5CztWw8z')
+    headers = {
+         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
+                      'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36'
+    }
+    try:
+        r = get(url, headers=headers)
+        r.encoding = "utf-8"
+        json_data = r.json()
+        j = json.dumps(json_data, sort_keys=True, indent=2, separators=(',', ': '), ensure_ascii=False)
+    except KeyError:
+        print("获取疫情信息失败，请检查")
+        os.system("pause")
+        sys.exit(1)
+    return eval(j)    
+
 
 def pin_time_zero(num):
     if (num < 10):
@@ -140,6 +160,74 @@ def get_ciba():
     note_en = r.json()["content"]
     note_ch = r.json()["note"]
     return note_ch, note_en
+
+def get_yq_area(orginData, loopOption, deepItem):
+    s = '无'
+    if (len(orginData[loopOption])):
+        for x in orginData[loopOption]:
+            if (len(x[deepItem])):
+                for i in x[deepItem]:
+                    s += ', ' + i
+    return s
+
+def send_yq_message(data, to_user, access_token):
+    url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token={}".format(access_token)   
+    
+    high_city_list = get_yq_area(data['data'], 'high_list', 'communitys')
+    mid_city_list = get_yq_area(data['data'], 'middle_list', 'communitys')
+    
+    data = {
+        "touser": to_user,
+        "template_id": 'igAjuD9g76vW0HsT_dXUd3B1tySM7rjJxOJvSfPBqvc',
+        "url": "http://weixin.qq.com/download",
+        "topcolor": "#FF0000",
+        "data": {
+            "city": {
+                "value": data['data']['city'],
+                "color": get_color()
+            },
+            "country": {
+                "value": data['data']['county'],
+                "color": get_color()
+            },
+            "end_update_time": {
+                "value": data['data']['end_update_time'],
+                "color": get_color()
+            },
+            "high_count": {
+                "value": data['data']['high_count'],
+                "color": get_color()
+            },
+            "middle_count": {
+                "value": data['data']['middle_count'],
+                "color": get_color()
+            },
+            'high_city_list': {
+                "value": high_city_list,
+                "color": get_color()
+            },
+            'mid_city_list': {
+                "value": mid_city_list,
+                "color": get_color()
+            },
+        }
+    }
+    headers = {
+        'Content-Type': 'application/json',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
+                      'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36'
+    }
+    response = post(url, headers=headers, json=data).json()
+    if response["errcode"] == 40037:
+        print("推送消息失败，请检查模板id是否正确")
+    elif response["errcode"] == 40036:
+        print("推送消息失败，请检查模板id是否为空")
+    elif response["errcode"] == 40003:
+        print("推送消息失败，请检查微信号是否正确")
+    elif response["errcode"] == 0:
+        print("推送消息成功")
+    else:
+        print(response)
 
 
 def send_message(to_user, access_token, city_name, weather, max_temperature, min_temperature, note_ch, note_en, xz_data):
@@ -312,18 +400,20 @@ if __name__ == "__main__":
         os.system("pause")
         sys.exit(1)
 
-    # 获取accessToken
+    # # 获取accessToken
     accessToken = get_access_token()
-    # 接收的用户
+    # # 接收的用户
     users = config["user"]
-    # 传入省份和市获取天气信息
+    # # 传入省份和市获取天气信息
     province, city = config["province"], config["city"]
     weather, max_temperature, min_temperature = get_weather(province, city)
-    # 获取词霸每日金句
+    # # 获取词霸每日金句
     note_ch, note_en = get_ciba()
-    # 获取星座
+    # # 获取星座
     xz_data = get_xz_data()
-    # 公众号推送消息
+    yq_data = get_yq()
+    # # 公众号推送消息
     for user in users:
         send_message(user, accessToken, city, weather, max_temperature, min_temperature, note_ch, note_en, xz_data)
+        send_yq_message(yq_data, user, accessToken)
     os.system("pause")

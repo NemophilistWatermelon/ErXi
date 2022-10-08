@@ -1,0 +1,11 @@
+统计日期 {{end_update_time.DATA}} 
+
+当前武陟的疫情😈: 
+    高风险区域数量: {{high_count.DATA}} 
+        - 高风险区域： {{ high_city_list.DATA }}
+
+    中风险区域数量: {{middle_count.DATA}} 
+    - 中风险区域： {{ mid_city_list.DATA }}
+
+注意防范哦，出门记得戴口罩哦😷~ 
+(天冷了，注意穿厚点保暖，不像我，肉多~)
