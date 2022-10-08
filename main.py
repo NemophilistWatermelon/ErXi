@@ -178,7 +178,7 @@ def send_yq_message(data, to_user, access_token):
     
     data = {
         "touser": to_user,
-        "template_id": 'igAjuD9g76vW0HsT_dXUd3B1tySM7rjJxOJvSfPBqvc',
+        "template_id": 'qvZBvfEqKoWworOuTdB9j5Ateuluhz1Iv9L48Bcr7To',
         "url": "http://weixin.qq.com/download",
         "topcolor": "#FF0000",
         "data": {
