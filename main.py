@@ -17,6 +17,24 @@ def get_color():
     color_list = get_colors(100)
     return random.choice(color_list)
 
+def get_henan_yiqing():
+    url = 'https://raw.githubusercontent.com/NemophilistWatermelon/NodeYqAction/master/result.json'
+    headers = {
+         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
+                      'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36'
+    }
+    try:
+        r = get(url, headers=headers)
+        r.encoding = "utf-8"
+        json_data = r.json()
+        j = json.dumps(json_data, sort_keys=True, indent=2, separators=(',', ': '), ensure_ascii=False)
+    except KeyError:
+        print("获取河南疫情信息失败，请检查")
+        os.system("pause")
+        sys.exit(1)
+    return eval(j)    
+    
+
 def get_yq():
     url = ('https://v2.alapi.cn/api/springTravel/risk?provice={}&city={}&county={}&token={}').format('河南省', '焦作市', '武陟县', 'USEOUa5B5CztWw8z')
     headers = {
@@ -170,16 +188,15 @@ def get_yq_area(orginData, loopOption, deepItem):
                     s += ', ' + i
     return s
 
-def send_yq_message(data, to_user, access_token):
+def send_yq_message(data, to_user, access_token, dict_data):
     url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token={}".format(access_token)   
     
     high_city_list = get_yq_area(data['data'], 'high_list', 'communitys')
     mid_city_list = get_yq_area(data['data'], 'middle_list', 'communitys')
-    
     data = {
         "touser": to_user,
-        "template_id": 'qvZBvfEqKoWworOuTdB9j5Ateuluhz1Iv9L48Bcr7To',
-        "url": "http://weixin.qq.com/download",
+        "template_id": 'UPO5JAYRx6Bl6V18yv2AKU7Eq0O-Sd6i2ePY-uWrF-A',
+        "url": dict_data.get('hn_qy_data')['url'],
         "topcolor": "#FF0000",
         "data": {
             "city": {
@@ -210,6 +227,18 @@ def send_yq_message(data, to_user, access_token):
                 "value": mid_city_list,
                 "color": get_color()
             },
+            'henanResult': {
+                "value": dict_data.get('hn_qy_data')['result'],
+                "color": get_color()
+            },
+            'henanOrgin': {
+                "value": dict_data.get('hn_qy_data')['dataOrgin'],
+                "color": get_color()
+            },
+            'henanDate': {
+                "value": dict_data.get('hn_qy_data')['fetchTime'],
+                "color": get_color()
+            }
         }
     }
     headers = {
@@ -412,8 +441,9 @@ if __name__ == "__main__":
     # # 获取星座
     xz_data = get_xz_data()
     yq_data = get_yq()
+    hn_qy_data = get_henan_yiqing()
     # # 公众号推送消息
     for user in users:
         send_message(user, accessToken, city, weather, max_temperature, min_temperature, note_ch, note_en, xz_data)
-        send_yq_message(yq_data, user, accessToken)
+        send_yq_message(yq_data, user, accessToken, dict(hn_qy_data=hn_qy_data))
     os.system("pause")
