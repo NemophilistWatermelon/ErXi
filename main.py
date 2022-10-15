@@ -179,85 +179,6 @@ def get_ciba():
     note_ch = r.json()["note"]
     return note_ch, note_en
 
-def get_yq_area(orginData, loopOption, deepItem):
-    s = '无'
-    if (len(orginData[loopOption])):
-        for x in orginData[loopOption]:
-            if (len(x[deepItem])):
-                for i in x[deepItem]:
-                    s += ', ' + i
-    return s
-
-def send_yq_message(data, to_user, access_token, dict_data):
-    url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token={}".format(access_token)   
-    
-    high_city_list = get_yq_area(data['data'], 'high_list', 'communitys')
-    mid_city_list = get_yq_area(data['data'], 'middle_list', 'communitys')
-    data = {
-        "touser": to_user,
-        "template_id": 'UPO5JAYRx6Bl6V18yv2AKU7Eq0O-Sd6i2ePY-uWrF-A',
-        "url": dict_data.get('hn_qy_data')['url'],
-        "topcolor": "#FF0000",
-        "data": {
-            "city": {
-                "value": data['data']['city'],
-                "color": get_color()
-            },
-            "country": {
-                "value": data['data']['county'],
-                "color": get_color()
-            },
-            "end_update_time": {
-                "value": data['data']['end_update_time'],
-                "color": get_color()
-            },
-            "high_count": {
-                "value": data['data']['high_count'],
-                "color": get_color()
-            },
-            "middle_count": {
-                "value": data['data']['middle_count'],
-                "color": get_color()
-            },
-            'high_city_list': {
-                "value": high_city_list,
-                "color": get_color()
-            },
-            'mid_city_list': {
-                "value": mid_city_list,
-                "color": get_color()
-            },
-            'henanResult': {
-                "value": dict_data.get('hn_qy_data')['result'],
-                "color": get_color()
-            },
-            'henanOrgin': {
-                "value": dict_data.get('hn_qy_data')['dataOrgin'],
-                "color": get_color()
-            },
-            'henanDate': {
-                "value": dict_data.get('hn_qy_data')['fetchTime'],
-                "color": get_color()
-            }
-        }
-    }
-    headers = {
-        'Content-Type': 'application/json',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
-                      'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36'
-    }
-    response = post(url, headers=headers, json=data).json()
-    if response["errcode"] == 40037:
-        print("推送消息失败，请检查模板id是否正确")
-    elif response["errcode"] == 40036:
-        print("推送消息失败，请检查模板id是否为空")
-    elif response["errcode"] == 40003:
-        print("推送消息失败，请检查微信号是否正确")
-    elif response["errcode"] == 0:
-        print("推送消息成功")
-    else:
-        print(response)
-
 
 def send_message(to_user, access_token, city_name, weather, max_temperature, min_temperature, note_ch, note_en, xz_data):
     url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token={}".format(access_token)
@@ -440,10 +361,7 @@ if __name__ == "__main__":
     note_ch, note_en = get_ciba()
     # # 获取星座
     xz_data = get_xz_data()
-    yq_data = get_yq()
-    hn_qy_data = get_henan_yiqing()
     # # 公众号推送消息
     for user in users:
         send_message(user, accessToken, city, weather, max_temperature, min_temperature, note_ch, note_en, xz_data)
-        send_yq_message(yq_data, user, accessToken, dict(hn_qy_data=hn_qy_data))
     os.system("pause")
